@@ -1,5 +1,5 @@
 #include <Adafruit_LiquidCrystal.h>
-#include <IRemote.hpp>
+#include <IRremote.h>
 
 bool switchLampState = false;
 bool circuitOn = true;
@@ -33,17 +33,23 @@ void setup()
 
 void loop() 
 {
-  if (!switchLampState) 
-  {
-    digitalWrite(0, HIGH);
-  }
-
   if (IrReceiver.decode())
   {
-    auto value = IrReceiver.decodeIRData.decodeRawData;
+    auto value = IrReceiver.decodedIRData.decodedRawData;
     switch (value)
     {
+      case 4010852096:
+        if (!switchLampState) 
+        {
+          digitalWrite(0, HIGH);
+        }
+        break;
+
       default:
+        if (switchLampState)
+        {
+          digitalWrite(0, LOW);
+        }
         break;
     }
   }
