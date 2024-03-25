@@ -1,58 +1,26 @@
 #include <Adafruit_LiquidCrystal.h>
-#include <IRremote.h>
-
-bool switchLampState = false;
-bool circuitOn = true;
 
 char* onText = "ON";
-char* offText = "OFF";
 
 Adafruit_LiquidCrystal lcd(0);
-IRrecv irrecv(3);
 
-void setup() 
+void setup()
 {
-  Serial.begin(9600);
-  irrecv.enableIRIn();
-
-  pinMode(0, OUTPUT);
-  pinMode(1, OUTPUT);
-
-  lcd.begin(16, 2);
-
-  if (circuitOn) 
-  {
-    lcd.print(onText);
-  }
+  pinMode(3, OUTPUT);
+  pinMode(2, INPUT);
   
-  else 
-  {
-    lcd.print(offText);
-  }
+  lcd.begin(16, 2);
+  lcd.print(onText);
 }
 
 void loop() 
 {
-  if (IrReceiver.decode())
+  if (digitalRead(2) == HIGH)
   {
-    auto value = IrReceiver.decodedIRData.decodedRawData;
-    switch (value)
-    {
-      case 4010852096:
-        if (!switchLampState) 
-        {
-          digitalWrite(0, HIGH);
-        }
-        break;
-
-      default:
-        if (switchLampState)
-        {
-          digitalWrite(0, LOW);
-        }
-        break;
-    }
+    digitalWrite(3, HIGH);
   }
-
-  IrReceiver.resume();
+  else
+  {
+    digitalWrite(3, LOW);
+  }
 }
